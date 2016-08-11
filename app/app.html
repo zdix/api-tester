@@ -1,0 +1,149 @@
+<div class="head">
+    Api Debug
+</div>
+<div class="line"></div>
+
+<div class="clear-20"></div>
+
+<div class="content">
+    <div class="login">
+        <div class="title">
+            Login in
+        </div>
+        <div class="line"></div>
+        <div class="contain">
+            <div ng-if="!userInfo">
+                <div class="login-row">
+                    <div class="row-name">Username</div>
+                    <div class="row-value">
+                        <input type="text" placeholder="Username"
+                               ng-model="loginInfo.username">
+                    </div>
+                </div>
+                <div class="login-row mt-10">
+                    <div class="row-name">Password</div>
+                    <div class="row-value">
+                        <input type="password" placeholder="Password"
+                               ng-model="loginInfo.password">
+                    </div>
+                </div>
+                <button class="btn btn-sm btn-white mt-10 mb-10" style="margin-left: 76px;padding: 6px 12px"
+                        type="submit"
+                        ng-click="signIn()">Sign in
+                </button>
+            </div>
+
+            <div ng-if="userInfo">
+                <div class="login-row">
+                    <pre class="alert alert-info">{{userInfo}}</pre>
+                </div>
+                <div class="login-row">
+                    <button class="btn btn-sm btn-white" style="margin-bottom: 10px" ng-click="logout()">Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="request">
+        <div class="title">
+            Request
+        </div>
+        <div class="line"></div>
+        <div class="contain">
+            <div class="request-row">
+                <div class="row-name">Type</div>
+                <div class="row-value">
+                    <select ng-model="selectType">
+                        <option value="{{interfaceType.type}}" ng-repeat="interfaceType in interfaceTypeList">
+                            {{interfaceType.type}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="hr-line-dashed m-5"></div>
+            <div class="request-row mt-15">
+                <div class="row-name">Name</div>
+                <div class="row-value">
+                    <!--<ui-select ng-model="interfaceOneTypeList.selected" theme="bootstrap">-->
+                    <!--<ui-select-match placeholder="Select Api Name">{{$select.selected.name}}-->
+                    <!--</ui-select-match>-->
+                    <!--<ui-select-choices-->
+                    <!--repeat="interface in interfaceOneTypeList | filter: $select.search">-->
+                    <!--<div ng-bind-html="interface.name | highlight: $select.search"></div>-->
+                    <!--</ui-select-choices>-->
+                    <!--</ui-select>-->
+                    <select ng-model="selectName">
+                        <option value="0">---请选择---</option>
+                        <option value="{{interface.name}}" ng-repeat="interface in interfaceOneTypeList">
+                            {{interface.name}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="hr-line-dashed m-5"></div>
+
+            <div class="request-row mt-15">
+                <div class="row-name">Action</div>
+                <div class="row-value">
+                    <input type="text" ng-model="action" disabled="disabled"/>
+
+                </div>
+                <button class="btn btn-sm btn-white" style="margin-left: 20px;padding: 6px 12px"
+                        ng-click="toggleDesc()">
+                    {{desc?'HideDesc':'ShowDesc'}}
+                </button>
+            </div>
+            <div class="request-row" style="padding: 0 84px; margin-top: 20px" ng-if="desc">
+                <pre class="alert alert-info" style="width:100%">{{descInfo}}</pre>
+            </div>
+            <div class="hr-line-dashed m-5"></div>
+
+            <h5 style="font-size: 14px;margin-top: 10px; color: #6A676C;">Params</h5>
+
+            <div class="clear-0"></div>
+
+            <div class="request-row" style="margin-top: 10px" ng-if="isNeedToken">
+                <div class="row-name">Token</div>
+                <div class="row-value">
+                    <input type="text" ng-model="input.token"/>
+                </div>
+            </div>
+
+            <div style="margin-top: 10px;" ng-repeat="param in params">
+                <div class="clear-10"></div>
+                <div class="request-row">
+                    <div class="row-name">{{param.name}}</div>
+                    <div class="row-value">
+                        <input class="form-control" type="text" ng-model="param.value"/>
+                    </div>
+                </div>
+            </div>
+            <div class="clear-10"></div>
+            <div class="request-row">
+                <button class="btn btn-sm btn-white mt-10 mb-10" style="margin-left: 85px;padding: 6px 12px"
+                        ng-click="apiRequest()">
+                    Request
+                </button>
+            </div>
+            <div class="clear-10"></div>
+        </div>
+    </div>
+
+    <div class="clear-30"></div>
+
+    <div class="response">
+        <div class="title">
+            Response
+        </div>
+        <div class="line"></div>
+        <div class="contain">
+            <div class="response-row">
+                <div class="alert alert-info" style="width:100%">
+                    <a ng-href="{{requestUrl}}" target="_blank">Request Full URL</a></div>
+            </div>
+            <div class="response-row">
+                <pre ng-if="response" class="alert {{style}}" style="margin: 30px; width: 100%;">{{response}}</pre>
+            </div>
+        </div>
+    </div>
+</div>
