@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html ng-app="inspinia">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <base href="demo.html">
+    <link rel="stylesheet" href="css/bundle.min.css" />
+    <link rel="stylesheet" href="demo/css/style.css" />
+</head>
+
+<body ng-controller="MainCtrl as main" class="{{$state.current.data.specialClass}}" landing-scrollspy id="page-top">
+
+<div ui-view></div>
+
+<script src="js/bundle.min.js"></script>
+<script src="demo/js/bundle.js"></script>
+<script src="js/app.js"></script>
+<script src="js/config.js"></script>
+<script src="js/translations.js"></script>
+<script src="js/directives.js"></script>
+<script src="js/controllers.js"></script>
+</body>
+</html>
