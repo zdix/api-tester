@@ -143,7 +143,6 @@
                         }
                     }
                 }
-                console.log(vm.interfaceOneTypeList);
             });
         }
 
@@ -155,9 +154,11 @@
                         for (var i in vm.interfaceOneTypeList) {
 
                             if (vm.interfaceOneTypeList[i].name == vm.selectName) {
+
                                 for (var j in vm.interfaceOneTypeList[i].params) {
                                     var param = {};
-                                    param.name = vm.interfaceOneTypeList[i].params[j];
+                                    param.name = j;
+                                    param.required = vm.interfaceOneTypeList[i].params[j];
                                     param.value = "";
                                     paramList.push(param);
                                 }

@@ -27,7 +27,7 @@
                                ng-model="loginInfo.password">
                     </div>
                 </div>
-                <button class="btn btn-sm btn-white mt-10 mb-10" style="margin-left: 76px;padding: 6px 12px"
+                <button class="btn btn-sm btn-white mt-10 mb-10" style="margin-left: calc(10% + 10px); padding: 0 12px; height: 34px;"
                         type="submit"
                         ng-click="signIn()">Login
                 </button>
@@ -38,7 +38,9 @@
                     <pre class="alert alert-info">{{userInfo}}</pre>
                 </div>
                 <div class="login-row">
-                    <button class="btn btn-sm btn-white" style="margin-bottom: 10px" ng-click="logout()">Logout</button>
+                    <button class="btn btn-sm btn-white" style="margin-bottom: 10px;padding: 0 12px; height: 34px;"
+                            ng-click="logout()">Logout
+                    </button>
                 </div>
             </div>
         </div>
@@ -88,22 +90,22 @@
                     <input type="text" ng-model="action" disabled="disabled"/>
 
                 </div>
-                <button class="btn btn-sm btn-white" style="margin-left: 20px;padding: 6px 12px"
+                <button class="btn btn-sm btn-white" style="margin-left: 20px;padding: 0 12px; height: 34px;"
                         ng-click="toggleDesc()">
                     {{desc?'HideDesc':'ShowDesc'}}
                 </button>
             </div>
-            <div class="request-row" style="padding: 0 84px; margin-top: 20px" ng-if="desc">
+            <div class="request-row" style="padding: 0 70px 0 20%; margin-top: 20px; margin-left: 10px;" ng-if="desc">
                 <pre class="alert alert-info" style="width:100%">{{descInfo}}</pre>
             </div>
             <div class="hr-line-dashed m-5"></div>
 
-            <h5 style="font-size: 14px;margin-top: 10px; color: #6A676C;">Params</h5>
+            <h5 style="font-size: 14px;margin-top: 10px; color: #6A676C;">Params&nbsp&nbsp(*代表必填)</h5>
 
             <div class="clear-0"></div>
 
             <div class="request-row" style="margin-top: 10px" ng-if="isNeedToken">
-                <div class="row-name">Token</div>
+                <div class="row-name">token</div>
                 <div class="row-value">
                     <input type="text" ng-model="input.token"/>
                 </div>
@@ -116,11 +118,12 @@
                     <div class="row-value">
                         <input class="form-control" type="text" ng-model="param.value"/>
                     </div>
+                    <div class="required" ng-if="param.required">*</div>
                 </div>
             </div>
             <div class="clear-10"></div>
-            <div class="request-row">
-                <button class="btn btn-sm btn-white mt-10 mb-10" style="margin-left: 85px;padding: 6px 12px"
+            <div class="request-row" style="padding-left: 20%;">
+                <button class="btn btn-sm btn-white mt-10 mb-10" style="margin-left: 10px; padding: 0 12px; height: 34px;"
                         ng-click="apiRequest()">
                     Request
                 </button>
@@ -138,11 +141,11 @@
         <div class="line"></div>
         <div class="contain">
             <div class="response-row">
-                <div class="alert alert-info" style="width:100%">
+                <div class="alert alert-info" style="width:100%; margin: 10px 30px 20px;">
                     <a ng-href="{{requestUrl}}" target="_blank">Request Full URL</a></div>
             </div>
             <div class="response-row">
-                <pre ng-if="response" class="alert {{style}}" style="margin: 30px; width: 100%;">{{response}}</pre>
+                <pre ng-if="response" class="alert {{style}}" style="margin: 0 30px 30px; width: 100%;">{{response}}</pre>
             </div>
         </div>
     </div>
