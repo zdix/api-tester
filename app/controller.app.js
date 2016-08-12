@@ -87,12 +87,12 @@
             Core.Api.post(action, data).then(
                 function (data) {
                     vm.response = JSON.stringify(data, null, 4);
-                    vm.style = "alert-info"
+                    vm.style = "alert-info";
                 },
 
                 function (reason) {
                     vm.response = JSON.stringify(reason, null, 4);
-                    vm.style = "alert-danger"
+                    vm.style = "alert-danger";
                 }
             );
 
