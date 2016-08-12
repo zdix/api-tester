@@ -42,15 +42,12 @@
         function getInterfaceList() {
             Core.Api.Test.getTypeList().then(
                 function (data) {
-                    console.log("---------");
-                    console.log(data);
-                    interfaceList = data.api;
+                    interfaceList = data.list;
                     interfaceClassifyByType();
                     setTypeSelectedListener();
                     setNameSelectedListener();
                 },
                 function (reason) {
-                    console.log(reason);
                     Core.setToken("");
                     alert(reason.message);
                 }
@@ -58,6 +55,7 @@
         }
 
         function signIn() {
+            console.log(vm.loginInfo);
             Core.Api.Test.login(vm.loginInfo.username, vm.loginInfo.password).then(
                 function (data) {
                     Core.set("token", data.token.token);
@@ -145,7 +143,7 @@
                         }
                     }
                 }
-                console.log( vm.interfaceOneTypeList);
+                console.log(vm.interfaceOneTypeList);
             });
         }
 
@@ -154,9 +152,9 @@
                     vm.action = "";
                     var paramList = [];
                     if (vm.selectName && vm.selectName != "0") {
-                        for(var i in vm.interfaceOneTypeList){
+                        for (var i in vm.interfaceOneTypeList) {
 
-                            if(vm.interfaceOneTypeList[i].name == vm.selectName){
+                            if (vm.interfaceOneTypeList[i].name == vm.selectName) {
                                 for (var j in vm.interfaceOneTypeList[i].params) {
                                     var param = {};
                                     param.name = vm.interfaceOneTypeList[i].params[j];
