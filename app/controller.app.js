@@ -51,7 +51,7 @@
                 },
                 function (reason) {
                     console.log(reason);
-                    Core.setToken("");
+                    Core.set("token", "");
                     alert(reason.message);
                 }
             )
@@ -145,7 +145,6 @@
                         }
                     }
                 }
-                console.log( vm.interfaceOneTypeList);
             });
         }
 
@@ -154,12 +153,14 @@
                     vm.action = "";
                     var paramList = [];
                     if (vm.selectName && vm.selectName != "0") {
-                        for(var i in vm.interfaceOneTypeList){
+                        for (var i in vm.interfaceOneTypeList) {
 
-                            if(vm.interfaceOneTypeList[i].name == vm.selectName){
+                            if (vm.interfaceOneTypeList[i].name == vm.selectName) {
+
                                 for (var j in vm.interfaceOneTypeList[i].params) {
                                     var param = {};
-                                    param.name = vm.interfaceOneTypeList[i].params[j];
+                                    param.name = j;
+                                    param.required = vm.interfaceOneTypeList[i].params[j];
                                     param.value = "";
                                     paramList.push(param);
                                 }
