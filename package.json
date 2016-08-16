@@ -61,6 +61,7 @@
     "angular-sortable-view": "0.0.15",
     "angular-touch": "^1.5.0-rc.0",
     "angular-ui-router": "^0.2.15",
+    "gulp-sass": "^2.3.2",
     "ng-file-upload": "^12.0.4",
     "simditor": "^2.3.6",
     "weui": "^0.2.3"

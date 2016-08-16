@@ -19,9 +19,9 @@
             username: ""
         };
         vm.input = {
-            token: ""
+            token: Core.get("token") ? Core.get("token") : ""
         };
-        vm.input.token = Core.get("token") ? Core.get("token") : "";
+
         vm.interfaceTypeList = [];
         vm.typeSelected = "all";
         vm.interfaceOneTypeList = [];
@@ -31,7 +31,7 @@
         vm.requestUrl = "";
         vm.userInfo = Core.get("user_info") ? JSON.stringify(Core.get("user_info"), null, 4) : "";
         vm.isSuccess = false;
-        var interfaceList;
+        var interfaceList = [];
         getInterfaceList();
 
 
@@ -43,6 +43,7 @@
             Core.Api.Test.getTypeList().then(
                 function (data) {
                     interfaceList = data.list;
+                    // console.log(interfaceList);
                     interfaceClassifyByType();
                     setTypeSelectedListener();
                     setNameSelectedListener();
@@ -56,12 +57,15 @@
 
         function signIn() {
             console.log(vm.loginInfo);
-            Core.Api.Test.login(vm.loginInfo.username, vm.loginInfo.password).then(
-                function (data) {
-                    Core.set("token", data.token.token);
-                    Core.set("user_info", data);
-                    vm.input.token = data.token.token;
-                    vm.userInfo = JSON.stringify(data, null, 4);
+            Core.Api.Test.login(
+                vm.loginInfo.username,
+                vm.loginInfo.password
+            ).then(
+                function (responseData) {
+                    Core.set("token", responseData.token);
+                    Core.set("user_info", responseData);
+                    vm.input.token = responseData.token;
+                    vm.userInfo = JSON.stringify(responseData, null, 4);
                 },
                 function (reason) {
                     Core.set("token", "");
@@ -71,7 +75,7 @@
         }
 
         function apiRequest() {
-            if (!vm.input.token && vm.isNeedToken) {
+            if (!vm.input.token) {
                 alert("请输入token");
                 vm.requestUrl = "";
                 return;
@@ -104,77 +108,82 @@
         }
 
         function interfaceClassifyByType() {
-            var data = interfaceList;
-            var interfaceTypes = [];
-            for (var i in data) {
-                if (interfaceTypes.length == 0) {
-                    var interfaceType = {type: "", interfaceList: []};
-                    interfaceType.type = data[i].type;
-                    interfaceType.interfaceList.push(data[i]);
-                    interfaceTypes.push(interfaceType);
-                } else {
-                    var hasType = false;
-                    for (var j in interfaceTypes) {
-                        if (interfaceTypes[j].type == data[i].type) {
-                            hasType = true;
-                            interfaceTypes[j].interfaceList.push(data[i]);
-                        }
-                    }
-                    if (!hasType) {
-                        var interfaceType = {type: '', interfaceList: []};
-                        interfaceType.type = data[i].type;
-                        interfaceType.interfaceList.push(data[i]);
-                        interfaceTypes.push(interfaceType);
+            var apiList = interfaceList;
+
+            //接口类型列表
+            var apiTypeList = [];
+
+            //所有接口列表, 未分类
+            var typeAllList = {
+                type: '全部',
+                interfaceList: []
+            };
+
+            var typeListInit = [];
+            //先生成全部的接口列表
+            for (var i in apiList) {
+                var apiItem = apiList[i];
+                typeAllList.interfaceList.push(apiItem);
+
+
+                if (apiItem.type != undefined)
+                {
+                    typeListInit.push(apiItem.type);
+                }
+            }
+            var typeList = Core.arrayUnique(typeListInit);
+            angular.forEach(typeList, function(type, key){
+                var typeObject = {
+                    type: type,
+                    interfaceList: []
+                };
+                for (var i in apiList) {
+                    var apiItem = apiList[i];
+                    if (apiItem.type == type)
+                    {
+                        typeObject.interfaceList.push(apiItem);
                     }
                 }
+                apiTypeList.push(typeObject);
+            });
 
-            }
-            vm.interfaceTypeList = [{type: '全部', interface: ''}].concat(interfaceTypes);
+            apiTypeList.unshift(typeAllList);
+
+            console.log(apiTypeList);
+
+            vm.interfaceTypeList = apiTypeList;
         }
 
         function setTypeSelectedListener() {
-            vm.$watch('selectType', function () {
-                if (!vm.selectType || vm.selectType == "全部") {
-                    vm.interfaceOneTypeList = [].concat(interfaceList);
-                } else {
-                    for (var i in vm.interfaceTypeList) {
-                        if (vm.interfaceTypeList[i].type == vm.selectType) {
-                            vm.interfaceOneTypeList = [].concat(vm.interfaceTypeList[i].interfaceList);
-                        }
-                    }
-                }
+            vm.$watch('selectType', function (newValue, oldValue) {
+                if (!newValue) return;
+                vm.interfaceOneTypeList = newValue.interfaceList;
             });
         }
 
         function setNameSelectedListener() {
-            vm.$watch('selectName', function () {
-                    vm.action = "";
-                    var paramList = [];
-                    if (vm.selectName && vm.selectName != "0") {
-                        for (var i in vm.interfaceOneTypeList) {
+            vm.$watch('selectName', function (newValue, oldValue) {
+                if (!newValue) return;
 
-                            if (vm.interfaceOneTypeList[i].name == vm.selectName) {
+                console.log(newValue);
 
-                                for (var j in vm.interfaceOneTypeList[i].params) {
-                                    var param = {};
-                                    param.name = j;
-                                    param.required = vm.interfaceOneTypeList[i].params[j];
-                                    param.value = "";
-                                    paramList.push(param);
-                                }
-                                vm.action = vm.interfaceOneTypeList[i].action;
-                                vm.params = paramList;
-                                vm.isNeedToken = vm.interfaceOneTypeList[i].token;
-                                vm.descInfo = vm.interfaceOneTypeList[i].desc ? vm.interfaceOneTypeList[i].desc : "暂无描述";
-                            }
-                        }
+                vm.action = "";
+                var paramList = [];
 
-                    }
-                }
-            );
+                angular.forEach(newValue.params, function (item, key) {
+                    var param = {
+                        name: key,
+                        value: "",
+                        required: item
+                    };
+
+                    paramList.push(param);
+                });
+                vm.action = newValue.action;
+                vm.params = paramList;
+                vm.descInfo = newValue.desc ? newValue.desc : "暂无描述";
+            });
         }
-
-
     }
 })
 ();

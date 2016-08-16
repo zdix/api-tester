@@ -27,7 +27,8 @@
                                ng-model="loginInfo.password">
                     </div>
                 </div>
-                <button class="btn btn-sm btn-white mt-10 mb-10" style="margin-left: calc(10% + 10px); padding: 0 12px; height: 34px;"
+                <button class="btn btn-sm btn-white mt-10 mb-10"
+                        style="margin-left: calc(10% + 10px); padding: 0 12px; height: 34px;"
                         type="submit"
                         ng-click="signIn()">Login
                 </button>
@@ -55,10 +56,8 @@
             <div class="request-row">
                 <div class="row-name">Type</div>
                 <div class="row-value">
-                    <select ng-model="selectType">
-                        <option value="{{interfaceType.type}}" ng-repeat="interfaceType in interfaceTypeList">
-                            {{interfaceType.type}}
-                        </option>
+                    <select ng-options="interfaceType.type for interfaceType in interfaceTypeList" ng-model="selectType">
+                        <option value="">--- 请选择类型 ---</option>
                     </select>
                 </div>
             </div>
@@ -66,19 +65,8 @@
             <div class="request-row mt-15">
                 <div class="row-name">Name</div>
                 <div class="row-value">
-                    <!--<ui-select ng-model="interfaceOneTypeList.selected" theme="bootstrap">-->
-                    <!--<ui-select-match placeholder="Select Api Name">{{$select.selected.name}}-->
-                    <!--</ui-select-match>-->
-                    <!--<ui-select-choices-->
-                    <!--repeat="interface in interfaceOneTypeList | filter: $select.search">-->
-                    <!--<div ng-bind-html="interface.name | highlight: $select.search"></div>-->
-                    <!--</ui-select-choices>-->
-                    <!--</ui-select>-->
-                    <select ng-model="selectName">
-                        <option value="0">---请选择---</option>
-                        <option value="{{interface.name}}" ng-repeat="interface in interfaceOneTypeList">
-                            {{interface.name}}
-                        </option>
+                    <select ng-options="interface.name for interface in interfaceOneTypeList" ng-model="selectName">
+                        <option value="">--- 请选择接口 ---</option>
                     </select>
                 </div>
             </div>
@@ -92,7 +80,7 @@
                 </div>
                 <button class="btn btn-sm btn-white" style="margin-left: 20px;padding: 0 12px; height: 34px;"
                         ng-click="toggleDesc()">
-                    {{desc?'HideDesc':'ShowDesc'}}
+                        {{desc ? 'HideDesc' : 'ShowDesc'}}
                 </button>
             </div>
             <div class="request-row" style="padding: 0 70px 0 20%; margin-top: 20px; margin-left: 10px;" ng-if="desc">
@@ -104,7 +92,7 @@
 
             <div class="clear-0"></div>
 
-            <div class="request-row" style="margin-top: 10px" ng-if="isNeedToken">
+            <div class="request-row" style="margin-top: 10px" >
                 <div class="row-name">token</div>
                 <div class="row-value">
                     <input type="text" ng-model="input.token"/>
@@ -123,7 +111,8 @@
             </div>
             <div class="clear-10"></div>
             <div class="request-row" style="padding-left: 20%;">
-                <button class="btn btn-sm btn-white mt-10 mb-10" style="margin-left: 10px; padding: 0 12px; height: 34px;"
+                <button class="btn btn-sm btn-white mt-10 mb-10"
+                        style="margin-left: 10px; padding: 0 12px; height: 34px;"
                         ng-click="apiRequest()">
                     Request
                 </button>
@@ -145,7 +134,8 @@
                     <a ng-href="{{requestUrl}}" target="_blank">Request Full URL</a></div>
             </div>
             <div class="response-row">
-                <pre ng-if="response" class="alert {{style}}" style="margin: 0 30px 30px; width: 100%;">{{response}}</pre>
+                <pre ng-if="response" class="alert {{style}}"
+                     style="margin: 0 30px 30px; width: 100%;">{{response}}</pre>
             </div>
         </div>
     </div>

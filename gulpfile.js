@@ -19,6 +19,7 @@ var rev = require("gulp-rev");
 var revReplace = require("gulp-rev-replace");
 var browserSync = require('browser-sync').create();
 var stylus = require('gulp-stylus');
+var sass = require('gulp-sass');
 
 var imagemin = require('gulp-imagemin');
 var pngquant = require('imagemin-pngquant');
@@ -63,9 +64,8 @@ gulp.task('build-js', ['clean-build'], function () {
 
 // 编译stylus
 gulp.task('build-stylus', ['clean-build'], function () {
-    var task = gulp.src(['app/*.styl'])
-        //.pipe(stylus().on('error', stylus.logError))
-        .pipe(stylus())
+    var task = gulp.src(['app/*.scss'])
+        .pipe(sass().on('error', sass.logError))
         .pipe(rename('app.css'))
         .pipe(gulp.dest('build/'));
 
@@ -116,3 +116,19 @@ gulp.task('default', [
     'clean-end'
 ]);
 
+gulp.task('watch', function () {
+    var jsWatcher = gulp.watch(['app/*.js'], ['default']);
+    jsWatcher.on('change', function (event) {
+        console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
+    });
+
+    var htmlWatcher = gulp.watch(['app/*.html'], ['default']);
+    htmlWatcher.on('change', function (event) {
+        console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
+    });
+
+    var cssWatcher = gulp.watch(['app/*.scss'], ['default']);
+    cssWatcher.on('change', function (event) {
+        console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
+    });
+});
