@@ -1,5 +1,7 @@
 .btn {
   border-radius: 3px;
+  outline: none;
+  cursor: pointer;
 }
 
 .float-e-margins .btn {
@@ -486,7 +488,8 @@ fieldset[disabled] .btn-white.active {
 }
 
 body {
-
+  padding: 0;
+  margin: 0;
   background: #f3f3f4;
 }
 
@@ -539,9 +542,9 @@ body {
 }
 
 .content {
-  box-sizing border-box;
-  min-width 1410px
-  padding 0 400px 0 200px;
+  width: 960px;
+  margin: 0 auto;
+  overflow-x: hidden;
 
   * {
     box-sizing: border-box;
@@ -552,6 +555,7 @@ body {
   }
 
   pre {
+    width: 60%;
     display: block;
     padding: 9.5px;
     margin: 0 0 10px;
@@ -639,12 +643,12 @@ body {
       display flex
       align-items center
       .row-name {
-        width 10%
+        width 20%
         color #6A676C
         font-size 14px;
       }
       .row-value {
-        width 50%
+        width 60%
         margin-left 10px
         input, select {
           display: block;
@@ -664,7 +668,8 @@ body {
     }
   }
   .response {
-    margin-top 20px
+    margin-top 20px;
+    margin-bottom: 20px;
     background: #fff;
     .title {
       height 40px
@@ -681,12 +686,12 @@ body {
       display flex
       align-items center
       .row-name {
-        width 10%
+        width 20%
         font-size 14px;
         color #6A676C
       }
       .row-value {
-        width 50%
+        width 60%
         margin-left 10px
         input {
           display: block;
