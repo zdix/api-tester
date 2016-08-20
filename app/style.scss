@@ -1,3 +1,23 @@
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    -webkit-touch-callout: none;
+    font-size: 12px;
+    color: #6A676C;
+    //-webkit-font-smoothing: antialiased;
+    font-family: "Helvetica Neue", Helvetica, "Nimbus Sans L", Arial, "Liberation Sans", "PingFang SC", "Hiragino Sans GB", "Source Han Sans CN", "Source Han Sans SC", "Microsoft YaHei", "Wenquanyi Micro Hei", "WenQuanYi Zen Hei", "ST Heiti", SimHei, "WenQuanYi Zen Hei Sharp", sans-serif;
+}
+a {
+    text-decoration: none;
+}
+a:hover {
+    cursor: pointer;
+    color: #337ab7;
+}
+.pull-right {
+    float: right;
+}
+
 .btn {
     border-radius: 3px;
     outline: none;
@@ -546,18 +566,10 @@ body {
     margin: 0 auto;
     overflow-x: hidden;
 
-    * {
-        box-sizing: border-box;
-        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-        -webkit-touch-callout: none;
-        //-webkit-font-smoothing: antialiased;
-        font-family: "Helvetica Neue", Helvetica, "Nimbus Sans L", Arial, "Liberation Sans", "PingFang SC", "Hiragino Sans GB", "Source Han Sans CN", "Source Han Sans SC", "Microsoft YaHei", "Wenquanyi Micro Hei", "WenQuanYi Zen Hei", "ST Heiti", SimHei, "WenQuanYi Zen Hei Sharp", sans-serif;
-    }
-
     pre {
         width: 60%;
         display: block;
-        padding: 9.5px;
+        padding: 1em;
         margin: 0 0 10px;
         word-break: break-all;
         word-wrap: break-word;
@@ -566,8 +578,11 @@ body {
         font-size: 13px;
         font-family: "Source Code Pro", Consolas, Menlo, Monaco, "Courier New", monospace;
         //-webkit-font-smoothing: none;
-        border-radius: 4px;
+        border-radius: 3px;
         overflow: auto;
+        border: none;
+
+        background: #F5F5F6;
     }
 
     .mt-10 {
@@ -595,6 +610,51 @@ body {
         .login-row {
             display: flex;
             align-items: center;
+            .show-info {
+                height: 40px;
+                width: 100%;
+                line-height: 40px;
+                font-size: 14px;
+                small {
+                    cursor: pointer;
+                    color: #337ab7;
+                }
+            }
+            .row-name {
+                width: 10%;
+                font-size: 14px;
+                color: #6A676C;
+            }
+            .row-value {
+                width: 50%;
+                margin-left: 10px;
+                input {
+                    display: block;
+                    box-sizing: border-box;
+                    width: 100%;
+                    height: 34px;
+                    padding: 6px 12px;
+                    font-size: 14px;
+                    line-height: 1.42857143;
+                    color: #555;
+                    background-color: #fff;
+                    background-image: none;
+                    border: 1px solid #ccc;
+                    border-radius: 4px;
+                }
+            }
+        }
+        .login-row-user-info-holder {
+            .show-info {
+                height: 40px;
+                width: 100%;
+                line-height: 40px;
+                font-size: 14px;
+                small {
+                    cursor: pointer;
+                    color: #337ab7;
+                }
+            }
             .row-name {
                 width: 10%;
                 font-size: 14px;
@@ -633,11 +693,11 @@ body {
         }
         .contain {
             margin-top: 10px;
-            padding-left: 70px;
+
             .required {
-                font-size: 24px;
+                font-size: 12px;
                 margin-left: 10px;
-                color: rgb(231, 76, 60);
+                //color: rgb(231, 76, 60);
             }
         }
         .request-row {

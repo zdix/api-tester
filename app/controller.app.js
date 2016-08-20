@@ -10,6 +10,7 @@
         vm.logout = logout;
         vm.apiRequest = apiRequest;
         vm.toggleDesc = toggleDesc;
+        vm.showUserDetail = showUserDetail;
         vm.selectType = "";
         vm.selectName = "";
         vm.desc = false;
@@ -31,12 +32,17 @@
         vm.requestUrl = "";
         vm.userInfo = Core.get("user_info") ? JSON.stringify(Core.get("user_info"), null, 4) : "";
         vm.isSuccess = false;
+        vm.showUserDeatilStatus = false;
         var interfaceList = [];
         getInterfaceList();
 
 
         function toggleDesc() {
             vm.desc = !vm.desc;
+        }
+
+        function showUserDetail() {
+            vm.showUserDeatilStatus = !vm.showUserDeatilStatus;
         }
 
         function getInterfaceList() {
@@ -92,8 +98,8 @@
                     vm.style = "alert-info";
                 },
 
-                function (reason) {
-                    vm.response = JSON.stringify(reason, null, 4);
+                function (error) {
+                    vm.response = JSON.stringify(error, null, 4);
                     vm.style = "alert-danger";
                 }
             );

@@ -83,7 +83,7 @@ gulp.task('build-html', ['clean-build', 'build-stylus', 'build-lib-js', 'build-j
 
     var task = gulp.src(['app/index.html'])
         .pipe(replace('@ng-app-name', 'app'))
-        .pipe(replace('@title', "API DEBUG"))
+        .pipe(replace('@title', "Api Test"))
         .pipe(replace('@base-url', 'index.html'))
         .pipe(replace('@app-css','<style>'+ app_css+'</style>'))
         .pipe(replace('@lib-js', '<script>'+bundle_js+'</script>'))
