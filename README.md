@@ -6,6 +6,10 @@
 3. Api地址需要手动配置`config.json`文件
 4. 配置完成玩,在访问这个页面的链接后加 `?api={apiName}`  `apiName` 下面表格中所列出的对象
 
+
+-------------
+
+
 |Api名称|地址|
 |---|---|
 |blua|[http://localhost:9999](http://localhost:9999)|
