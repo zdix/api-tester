@@ -33,10 +33,10 @@ var fs = require("fs");
 
 gulp.task('clean-build', function () {
 
-    var task = gulp.src(['build'], {read: false})
-        .pipe(clean({force: true}));
-
-    return merge(task);
+    // var task = gulp.src(['build'], {read: false})
+    //     .pipe(clean({force: true}));
+    //
+    // return merge(task);
 });
 
 //合并LIB下的js
@@ -117,7 +117,7 @@ gulp.task('default', [
 ]);
 
 gulp.task('watch', function () {
-    var jsWatcher = gulp.watch(['app/*.js'], ['default']);
+    var jsWatcher = gulp.watch(['app/*.js', 'lib/*.js'], ['default']);
     jsWatcher.on('change', function (event) {
         console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
     });

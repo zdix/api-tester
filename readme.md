@@ -1,5 +1,9 @@
 ## Api Test
 
+### help 
+> 在url 加 `?api={apiName}`  `apiName` 下面表格中所列出的对象
+
+
 |Api名称|地址|
 |---|---|
-|本地调试|http://localhost:9999|
+|blua|http://localhost:9999|
