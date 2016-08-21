@@ -8,4 +8,4 @@
 
 |Api名称|地址|
 |---|---|
-|blua|http://localhost:9999|
+|blua|[http://localhost:9999](http://localhost:9999)|
