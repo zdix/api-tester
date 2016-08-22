@@ -81,17 +81,19 @@
         }
 
         function apiRequest() {
-            if (!vm.input.token) {
-                alert("请输入token");
-                vm.requestUrl = "";
-                return;
-            }
+            // if (!vm.input.token) {
+            //     alert("请输入token");
+            //     vm.requestUrl = "";
+            //     return;
+            // }
             var action = vm.action;
             var data = {};
             for (var i in vm.params) {
                 data[vm.params[i].name] = vm.params[i].value;
             }
-            vm.requestUrl = Core.Api.getUrl(action, data);
+            Core.Api.getUrl(action, data).then(function (data) {
+                vm.requestUrl = data;
+            });
             Core.Api.post(action, data).then(
                 function (data) {
                     vm.response = JSON.stringify(data, null, 4);
