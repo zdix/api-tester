@@ -9,7 +9,6 @@
 
 -------------
 
+## Api列表
 
-|Api名称|地址|
-|---|---|
-|blua|[http://blua-api.sinfere.com](http://blua-api.sinfere.com)|
+- [blua](https://zdix.github.io/api-tester/build/index.html?api=blua)
