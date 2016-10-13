@@ -1023,25 +1023,47 @@ PATTERNS:[{gSize:3,lgSize:3,maxFrac:3,minFrac:0,minInt:1,negPre:"-",negSuf:"",po
         // var URL = "http://localhost:3000/v1";
         // var URL = "http://121.43.150.28/v1";
         var URL = "http://localhost:9999";
+        var Const = {
+            DATA: {
+                KEY_PREFIX: 'api.test.data.',
+            },
+            KEY_TOKEN: 'token',
+            KEY_ADMIN_INFO: 'admin.info',
+            KEY_USER_INFO: 'user.info'
+        };
         return {
             get: get,
             set: set,
             setToken: setToken,
+            getToken: getToken,
             Api: api(),
             URL: URL,
+            Const: Const,
             arrayUnique: array_unique,
         };
 
+        function getKey(key) {
+            return Const.DATA.KEY_PREFIX + key;
+        }
+
         function get(key) {
+            key = getKey(key);
             return localStorageService.get(key);
         }
 
         function set(key, val) {
+            key = getKey(key);
             return localStorageService.set(key, val);
         }
 
         function setToken(token) {
-            return set("token", token);
+            var key = getKey(Const.KEY_TOKEN);
+            return set(key, token);
+        }
+
+        function getToken() {
+            var key = getKey(Const.KEY_TOKEN);
+            return get(key);
         }
 
         function array_unique(inputArr) {
@@ -1093,7 +1115,8 @@ PATTERNS:[{gSize:3,lgSize:3,maxFrac:3,minFrac:0,minInt:1,negPre:"-",negSuf:"",po
             var apiList = {
                 Test: {
                     getTypeList: ['api/list'],
-                    login: ['user/login', 'username', 'password']
+                    login: ['user/login', 'username', 'password'],
+                    adminLogin: ['admin/login', 'username', 'password']
                 }
 
             };
@@ -1179,7 +1202,7 @@ PATTERNS:[{gSize:3,lgSize:3,maxFrac:3,minFrac:0,minInt:1,negPre:"-",negSuf:"",po
                 return getApiUrlByName().then(function (responseData) {
                     var netPointUrl = responseData ? responseData : URL;
 
-                    var token = localStorageService.get("token");
+                    var token = getToken();
                     var url = netPointUrl + '/' + api + '?token=' + token + '&';
                     console.log(url + transformObjectToUrlencodedData(data));
                     return $http({
@@ -1251,10 +1274,14 @@ PATTERNS:[{gSize:3,lgSize:3,maxFrac:3,minFrac:0,minInt:1,negPre:"-",negSuf:"",po
     function IndexController($scope, Core) {
         var vm = $scope;
         vm.signIn = signIn;
+        vm.adminSignIn = adminSignIn;
         vm.logout = logout;
+        vm.adminLogout = adminLogout;
         vm.apiRequest = apiRequest;
         vm.toggleDesc = toggleDesc;
         vm.showUserDetail = showUserDetail;
+        vm.showAdminDetail = showAdminDetail;
+        vm.inputToken = inputToken;
         vm.selectType = "";
         vm.selectName = "";
         vm.desc = false;
@@ -1263,8 +1290,12 @@ PATTERNS:[{gSize:3,lgSize:3,maxFrac:3,minFrac:0,minInt:1,negPre:"-",negSuf:"",po
             password: "",
             username: ""
         };
+        vm.adminLoginInfo = {
+            password: "",
+            username: ""
+        };
         vm.input = {
-            token: Core.get("token") ? Core.get("token") : ""
+            token: Core.getToken() ? Core.getToken() : ""
         };
 
         vm.interfaceTypeList = [];
@@ -1274,9 +1305,11 @@ PATTERNS:[{gSize:3,lgSize:3,maxFrac:3,minFrac:0,minInt:1,negPre:"-",negSuf:"",po
         vm.params = [];
         vm.response = "";
         vm.requestUrl = "";
-        vm.userInfo = Core.get("user_info") ? JSON.stringify(Core.get("user_info"), null, 4) : "";
+        vm.userInfo = Core.get(Core.Const.KEY_USER_INFO) ? JSON.stringify(Core.get(Core.Const.KEY_USER_INFO), null, 4) : "";
+        vm.adminInfo = Core.get(Core.Const.KEY_ADMIN_INFO) ? JSON.stringify(Core.get(Core.Const.KEY_ADMIN_INFO), null, 4) : "";
         vm.isSuccess = false;
         vm.showUserDeatilStatus = false;
+        vm.showAdminDeatilStatus = false;
         var interfaceList = [];
         getInterfaceList();
 
@@ -1287,6 +1320,10 @@ PATTERNS:[{gSize:3,lgSize:3,maxFrac:3,minFrac:0,minInt:1,negPre:"-",negSuf:"",po
 
         function showUserDetail() {
             vm.showUserDeatilStatus = !vm.showUserDeatilStatus;
+        }
+
+        function showAdminDetail() {
+            vm.showAdminDeatilStatus = !vm.showAdminDeatilStatus;
         }
 
         function getInterfaceList() {
@@ -1306,20 +1343,50 @@ PATTERNS:[{gSize:3,lgSize:3,maxFrac:3,minFrac:0,minInt:1,negPre:"-",negSuf:"",po
         }
 
         function signIn() {
-            console.log(vm.loginInfo);
+            console.info("user login");
             Core.Api.Test.login(
                 vm.loginInfo.username,
                 vm.loginInfo.password
             ).then(
-                function (responseData) {
-                    Core.set("token", responseData.token);
-                    Core.set("user_info", responseData);
-                    vm.input.token = responseData.token;
-                    vm.userInfo = JSON.stringify(responseData, null, 4);
+                function (res) {
+                    console.log('12');
+                    if (res.code == 0) {
+                        Core.setToken(res.token);
+                        Core.set(Core.Const.KEY_USER_INFO, res);
+                        vm.input.token = res.token;
+                        vm.userInfo = JSON.stringify(res, null, 4);
+                    }
+                    else {
+                        showError(res);
+                    }
                 },
-                function (reason) {
-                    Core.set("token", "");
-                    alert(reason.message);
+                function (err) {
+                    Core.setToken("");
+                    showError(err.message);
+                }
+            )
+        }
+
+        function adminSignIn() {
+            console.info("admin login");
+            Core.Api.Test.adminLogin(
+                vm.adminLoginInfo.username,
+                vm.adminLoginInfo.password
+            ).then(
+                function (res) {
+                    if (res.code == 0) {
+                        Core.setToken(res.token);
+                        Core.set(Core.Const.KEY_ADMIN_INFO, res);
+                        vm.input.token = res.token;
+                        vm.adminInfo = JSON.stringify(res, null, 4);
+                    }
+                    else {
+                        showError(res)
+                    }
+                },
+                function (err) {
+                    Core.setToken("");
+                    showError(err.message);
                 }
             )
         }
@@ -1338,14 +1405,19 @@ PATTERNS:[{gSize:3,lgSize:3,maxFrac:3,minFrac:0,minInt:1,negPre:"-",negSuf:"",po
             Core.Api.getUrl(action, data).then(function (data) {
                 vm.requestUrl = data;
             });
+
             Core.Api.post(action, data).then(
-                function (data) {
-                    vm.response = JSON.stringify(data, null, 4);
+                function (res) {
+                    if (res.hasOwnProperty("token")) {
+                        Core.setToken(res.token);
+                        vm.input.token = res.token;
+                    }
+                    vm.response = JSON.stringify(res, null, 4);
                     vm.style = "alert-info";
                 },
 
-                function (error) {
-                    vm.response = JSON.stringify(error, null, 4);
+                function (err) {
+                    vm.response = JSON.stringify(err, null, 4);
                     vm.style = "alert-danger";
                 }
             );
@@ -1353,10 +1425,17 @@ PATTERNS:[{gSize:3,lgSize:3,maxFrac:3,minFrac:0,minInt:1,negPre:"-",negSuf:"",po
         }
 
         function logout() {
-            Core.set("token", "");
-            Core.set("user_info", "");
+            Core.setToken("");
+            Core.set(Core.Const.KEY_USER_INFO, "");
             vm.input.token = "";
             vm.userInfo = "";
+        }
+
+        function adminLogout() {
+            Core.setToken("");
+            Core.set(Core.Const.KEY_ADMIN_INFO, "");
+            vm.input.token = "";
+            vm.adminInfo = "";
         }
 
         function interfaceClassifyByType() {
@@ -1378,21 +1457,19 @@ PATTERNS:[{gSize:3,lgSize:3,maxFrac:3,minFrac:0,minInt:1,negPre:"-",negSuf:"",po
                 typeAllList.interfaceList.push(apiItem);
 
 
-                if (apiItem.type != undefined)
-                {
+                if (apiItem.type != undefined) {
                     typeListInit.push(apiItem.type);
                 }
             }
             var typeList = Core.arrayUnique(typeListInit);
-            angular.forEach(typeList, function(type, key){
+            angular.forEach(typeList, function (type, key) {
                 var typeObject = {
                     type: type,
                     interfaceList: []
                 };
                 for (var i in apiList) {
                     var apiItem = apiList[i];
-                    if (apiItem.type == type)
-                    {
+                    if (apiItem.type == type) {
                         typeObject.interfaceList.push(apiItem);
                     }
                 }
@@ -1436,6 +1513,22 @@ PATTERNS:[{gSize:3,lgSize:3,maxFrac:3,minFrac:0,minInt:1,negPre:"-",negSuf:"",po
                 vm.descInfo = newValue.desc ? newValue.desc : "暂无描述";
             });
         }
+
+        function inputToken() {
+            var token = prompt("Input Your Token", "");
+            console.info("input token: ", token);
+            if (token != null) {
+                Core.setToken(token);
+                vm.input.token = token;
+            }
+            else {
+
+            }
+        }
+        
+        function showError(data) {
+            alert(JSON.stringify(data));
+        }
     }
 })
 ();</script>
@@ -1452,9 +1545,7 @@ PATTERNS:[{gSize:3,lgSize:3,maxFrac:3,minFrac:0,minInt:1,negPre:"-",negSuf:"",po
 
 <div class="content">
     <div class="login">
-        <div class="title">
-            Login
-        </div>
+        <div class="title">User Login <small> ["user/login", "username", "password"] </small></div>
         <div class="line"></div>
         <div class="contain">
             <div ng-if="!userInfo">
@@ -1482,12 +1573,13 @@ PATTERNS:[{gSize:3,lgSize:3,maxFrac:3,minFrac:0,minInt:1,negPre:"-",negSuf:"",po
             </div>
 
 
-
             <div ng-if="userInfo">
 
                 <div class="login-row-user-info-holder">
                     <div class="show-info">
-                        User Already Login &nbsp;&nbsp;&nbsp;&nbsp;<small ng-click="showUserDetail()">{{ showUserDeatilStatus ? 'hide detail' : 'show detail' }}</small>
+                        User Already Login &nbsp;&nbsp;&nbsp;&nbsp;
+                        <small ng-click="showUserDetail()">{{ showUserDeatilStatus ? 'hide detail' : 'show detail' }}
+                        </small>
                     </div>
                     <pre class="alert" ng-show="showUserDeatilStatus">{{userInfo}}</pre>
                 </div>
@@ -1495,6 +1587,53 @@ PATTERNS:[{gSize:3,lgSize:3,maxFrac:3,minFrac:0,minInt:1,negPre:"-",negSuf:"",po
                 <div class="login-row">
                     <button class="btn btn-white" style="margin-bottom: 10px;padding: 0 12px; height: 34px;"
                             ng-click="logout()">Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="login">
+        <div class="title">Admin Login <small> ["admin/login", "username", "password"] </small></div>
+        <div class="line"></div>
+        <div class="contain">
+            <div ng-if="!adminInfo">
+                <form>
+                    <div class="login-row">
+                        <div class="row-name">Username</div>
+                        <div class="row-value">
+                            <input type="text" placeholder="Username" ng-model="adminLoginInfo.username">
+                        </div>
+                    </div>
+                    <div class="login-row mt-10">
+                        <div class="row-name">Password</div>
+                        <div class="row-value">
+                            <input type="password" placeholder="Password" ng-model="adminLoginInfo.password">
+                        </div>
+                    </div>
+                    <button class="btn btn-sm btn-white mt-10 mb-10"
+                            style="margin-left: calc(10% + 10px); padding: 0 12px; height: 34px;"
+                            type="submit"
+                            ng-click="adminSignIn()">Admin Login
+                    </button>
+                </form>
+            </div>
+
+
+            <div ng-if="adminInfo">
+
+                <div class="login-row-user-info-holder">
+                    <div class="show-info">
+                        Admin Already Login &nbsp;&nbsp;&nbsp;&nbsp;
+                        <small ng-click="showUserDetail()">{{ showAdminDeatilStatus ? 'hide detail' : 'show detail' }}
+                        </small>
+                    </div>
+                    <pre class="alert" ng-show="showAdminDeatilStatus">{{adminInfo}}</pre>
+                </div>
+
+                <div class="login-row">
+                    <button class="btn btn-white" style="margin-bottom: 10px;padding: 0 12px; height: 34px;"
+                            ng-click="adminLogout()">Logout
                     </button>
                 </div>
             </div>
@@ -1539,7 +1678,8 @@ PATTERNS:[{gSize:3,lgSize:3,maxFrac:3,minFrac:0,minInt:1,negPre:"-",negSuf:"",po
                         {{desc ? 'Hide Desc' : 'Show Desc'}}
                     </button>
                 </div>
-                <div class="request-row" style="padding: 0 70px 0 20%; margin-top: 20px; margin-left: 10px;" ng-if="desc">
+                <div class="request-row" style="padding: 0 70px 0 20%; margin-top: 20px; margin-left: 10px;"
+                     ng-if="desc">
                     <pre class="alert" style="width:100%">{{descInfo}}</pre>
                 </div>
             </div>
@@ -1556,6 +1696,7 @@ PATTERNS:[{gSize:3,lgSize:3,maxFrac:3,minFrac:0,minInt:1,negPre:"-",negSuf:"",po
                     <div class="row-value">
                         <input type="text" ng-model="input.token" disabled="disabled"/>
                     </div>
+                    <button class="btn btn-white mt-10 mb-10" style="margin-left: 10px; padding: 0 12px; height: 34px;" ng-click="inputToken()">Input Token</button>
                 </div>
 
                 <div style="margin-top: 10px;" ng-repeat="param in params">

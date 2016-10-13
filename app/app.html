@@ -7,9 +7,7 @@
 
 <div class="content">
     <div class="login">
-        <div class="title">
-            Login
-        </div>
+        <div class="title">User Login <small> ["user/login", "username", "password"] </small></div>
         <div class="line"></div>
         <div class="contain">
             <div ng-if="!userInfo">
@@ -37,12 +35,13 @@
             </div>
 
 
-
             <div ng-if="userInfo">
 
                 <div class="login-row-user-info-holder">
                     <div class="show-info">
-                        User Already Login &nbsp;&nbsp;&nbsp;&nbsp;<small ng-click="showUserDetail()">{{ showUserDeatilStatus ? 'hide detail' : 'show detail' }}</small>
+                        User Already Login &nbsp;&nbsp;&nbsp;&nbsp;
+                        <small ng-click="showUserDetail()">{{ showUserDeatilStatus ? 'hide detail' : 'show detail' }}
+                        </small>
                     </div>
                     <pre class="alert" ng-show="showUserDeatilStatus">{{userInfo}}</pre>
                 </div>
@@ -50,6 +49,53 @@
                 <div class="login-row">
                     <button class="btn btn-white" style="margin-bottom: 10px;padding: 0 12px; height: 34px;"
                             ng-click="logout()">Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="login">
+        <div class="title">Admin Login <small> ["admin/login", "username", "password"] </small></div>
+        <div class="line"></div>
+        <div class="contain">
+            <div ng-if="!adminInfo">
+                <form>
+                    <div class="login-row">
+                        <div class="row-name">Username</div>
+                        <div class="row-value">
+                            <input type="text" placeholder="Username" ng-model="adminLoginInfo.username">
+                        </div>
+                    </div>
+                    <div class="login-row mt-10">
+                        <div class="row-name">Password</div>
+                        <div class="row-value">
+                            <input type="password" placeholder="Password" ng-model="adminLoginInfo.password">
+                        </div>
+                    </div>
+                    <button class="btn btn-sm btn-white mt-10 mb-10"
+                            style="margin-left: calc(10% + 10px); padding: 0 12px; height: 34px;"
+                            type="submit"
+                            ng-click="adminSignIn()">Admin Login
+                    </button>
+                </form>
+            </div>
+
+
+            <div ng-if="adminInfo">
+
+                <div class="login-row-user-info-holder">
+                    <div class="show-info">
+                        Admin Already Login &nbsp;&nbsp;&nbsp;&nbsp;
+                        <small ng-click="showUserDetail()">{{ showAdminDeatilStatus ? 'hide detail' : 'show detail' }}
+                        </small>
+                    </div>
+                    <pre class="alert" ng-show="showAdminDeatilStatus">{{adminInfo}}</pre>
+                </div>
+
+                <div class="login-row">
+                    <button class="btn btn-white" style="margin-bottom: 10px;padding: 0 12px; height: 34px;"
+                            ng-click="adminLogout()">Logout
                     </button>
                 </div>
             </div>
@@ -94,7 +140,8 @@
                         {{desc ? 'Hide Desc' : 'Show Desc'}}
                     </button>
                 </div>
-                <div class="request-row" style="padding: 0 70px 0 20%; margin-top: 20px; margin-left: 10px;" ng-if="desc">
+                <div class="request-row" style="padding: 0 70px 0 20%; margin-top: 20px; margin-left: 10px;"
+                     ng-if="desc">
                     <pre class="alert" style="width:100%">{{descInfo}}</pre>
                 </div>
             </div>
@@ -111,6 +158,7 @@
                     <div class="row-value">
                         <input type="text" ng-model="input.token" disabled="disabled"/>
                     </div>
+                    <button class="btn btn-white mt-10 mb-10" style="margin-left: 10px; padding: 0 12px; height: 34px;" ng-click="inputToken()">Input Token</button>
                 </div>
 
                 <div style="margin-top: 10px;" ng-repeat="param in params">

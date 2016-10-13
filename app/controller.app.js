@@ -7,10 +7,14 @@
     function IndexController($scope, Core) {
         var vm = $scope;
         vm.signIn = signIn;
+        vm.adminSignIn = adminSignIn;
         vm.logout = logout;
+        vm.adminLogout = adminLogout;
         vm.apiRequest = apiRequest;
         vm.toggleDesc = toggleDesc;
         vm.showUserDetail = showUserDetail;
+        vm.showAdminDetail = showAdminDetail;
+        vm.inputToken = inputToken;
         vm.selectType = "";
         vm.selectName = "";
         vm.desc = false;
@@ -19,8 +23,12 @@
             password: "",
             username: ""
         };
+        vm.adminLoginInfo = {
+            password: "",
+            username: ""
+        };
         vm.input = {
-            token: Core.get("token") ? Core.get("token") : ""
+            token: Core.getToken() ? Core.getToken() : ""
         };
 
         vm.interfaceTypeList = [];
@@ -30,9 +38,11 @@
         vm.params = [];
         vm.response = "";
         vm.requestUrl = "";
-        vm.userInfo = Core.get("user_info") ? JSON.stringify(Core.get("user_info"), null, 4) : "";
+        vm.userInfo = Core.get(Core.Const.KEY_USER_INFO) ? JSON.stringify(Core.get(Core.Const.KEY_USER_INFO), null, 4) : "";
+        vm.adminInfo = Core.get(Core.Const.KEY_ADMIN_INFO) ? JSON.stringify(Core.get(Core.Const.KEY_ADMIN_INFO), null, 4) : "";
         vm.isSuccess = false;
         vm.showUserDeatilStatus = false;
+        vm.showAdminDeatilStatus = false;
         var interfaceList = [];
         getInterfaceList();
 
@@ -43,6 +53,10 @@
 
         function showUserDetail() {
             vm.showUserDeatilStatus = !vm.showUserDeatilStatus;
+        }
+
+        function showAdminDetail() {
+            vm.showAdminDeatilStatus = !vm.showAdminDeatilStatus;
         }
 
         function getInterfaceList() {
@@ -62,20 +76,50 @@
         }
 
         function signIn() {
-            console.log(vm.loginInfo);
+            console.info("user login");
             Core.Api.Test.login(
                 vm.loginInfo.username,
                 vm.loginInfo.password
             ).then(
-                function (responseData) {
-                    Core.set("token", responseData.token);
-                    Core.set("user_info", responseData);
-                    vm.input.token = responseData.token;
-                    vm.userInfo = JSON.stringify(responseData, null, 4);
+                function (res) {
+                    console.log('12');
+                    if (res.code == 0) {
+                        Core.setToken(res.token);
+                        Core.set(Core.Const.KEY_USER_INFO, res);
+                        vm.input.token = res.token;
+                        vm.userInfo = JSON.stringify(res, null, 4);
+                    }
+                    else {
+                        showError(res);
+                    }
                 },
-                function (reason) {
-                    Core.set("token", "");
-                    alert(reason.message);
+                function (err) {
+                    Core.setToken("");
+                    showError(err.message);
+                }
+            )
+        }
+
+        function adminSignIn() {
+            console.info("admin login");
+            Core.Api.Test.adminLogin(
+                vm.adminLoginInfo.username,
+                vm.adminLoginInfo.password
+            ).then(
+                function (res) {
+                    if (res.code == 0) {
+                        Core.setToken(res.token);
+                        Core.set(Core.Const.KEY_ADMIN_INFO, res);
+                        vm.input.token = res.token;
+                        vm.adminInfo = JSON.stringify(res, null, 4);
+                    }
+                    else {
+                        showError(res)
+                    }
+                },
+                function (err) {
+                    Core.setToken("");
+                    showError(err.message);
                 }
             )
         }
@@ -94,14 +138,19 @@
             Core.Api.getUrl(action, data).then(function (data) {
                 vm.requestUrl = data;
             });
+
             Core.Api.post(action, data).then(
-                function (data) {
-                    vm.response = JSON.stringify(data, null, 4);
+                function (res) {
+                    if (res.hasOwnProperty("token")) {
+                        Core.setToken(res.token);
+                        vm.input.token = res.token;
+                    }
+                    vm.response = JSON.stringify(res, null, 4);
                     vm.style = "alert-info";
                 },
 
-                function (error) {
-                    vm.response = JSON.stringify(error, null, 4);
+                function (err) {
+                    vm.response = JSON.stringify(err, null, 4);
                     vm.style = "alert-danger";
                 }
             );
@@ -109,10 +158,17 @@
         }
 
         function logout() {
-            Core.set("token", "");
-            Core.set("user_info", "");
+            Core.setToken("");
+            Core.set(Core.Const.KEY_USER_INFO, "");
             vm.input.token = "";
             vm.userInfo = "";
+        }
+
+        function adminLogout() {
+            Core.setToken("");
+            Core.set(Core.Const.KEY_ADMIN_INFO, "");
+            vm.input.token = "";
+            vm.adminInfo = "";
         }
 
         function interfaceClassifyByType() {
@@ -134,21 +190,19 @@
                 typeAllList.interfaceList.push(apiItem);
 
 
-                if (apiItem.type != undefined)
-                {
+                if (apiItem.type != undefined) {
                     typeListInit.push(apiItem.type);
                 }
             }
             var typeList = Core.arrayUnique(typeListInit);
-            angular.forEach(typeList, function(type, key){
+            angular.forEach(typeList, function (type, key) {
                 var typeObject = {
                     type: type,
                     interfaceList: []
                 };
                 for (var i in apiList) {
                     var apiItem = apiList[i];
-                    if (apiItem.type == type)
-                    {
+                    if (apiItem.type == type) {
                         typeObject.interfaceList.push(apiItem);
                     }
                 }
@@ -191,6 +245,22 @@
                 vm.params = paramList;
                 vm.descInfo = newValue.desc ? newValue.desc : "暂无描述";
             });
+        }
+
+        function inputToken() {
+            var token = prompt("Input Your Token", "");
+            console.info("input token: ", token);
+            if (token != null) {
+                Core.setToken(token);
+                vm.input.token = token;
+            }
+            else {
+
+            }
+        }
+        
+        function showError(data) {
+            alert(JSON.stringify(data));
         }
     }
 })
