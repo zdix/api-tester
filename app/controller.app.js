@@ -137,6 +137,7 @@
             }
             Core.Api.getUrl(action, data).then(function (data) {
                 vm.requestUrl = data;
+                console.log(data);
             });
 
             Core.Api.post(action, data).then(

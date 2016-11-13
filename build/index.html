@@ -1240,7 +1240,7 @@ PATTERNS:[{gSize:3,lgSize:3,maxFrac:3,minFrac:0,minInt:1,negPre:"-",negSuf:"",po
             }
 
             function getUrl(api, data) {
-                var token = get("token");
+                var token = getToken();
                 return getApiUrlByName().then(function (responseData) {
                     var netPointUrl = responseData ? responseData : URL;
 
@@ -1404,6 +1404,7 @@ PATTERNS:[{gSize:3,lgSize:3,maxFrac:3,minFrac:0,minInt:1,negPre:"-",negSuf:"",po
             }
             Core.Api.getUrl(action, data).then(function (data) {
                 vm.requestUrl = data;
+                console.log(data);
             });
 
             Core.Api.post(action, data).then(
